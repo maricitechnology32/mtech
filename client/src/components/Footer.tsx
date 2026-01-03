@@ -87,7 +87,7 @@ export default function Footer() {
           {/* Brand */}
           <div className="col-span-2 md:col-span-1">
             <div className="flex items-center gap-2 mb-4">
-              <img src="/logo.png" alt={settings.companyName} className="h-12 w-auto bg-white rounded-lg p-1" />
+              <img src="/logo.png" alt={settings.companyName} className="h-20 w-auto bg-white rounded-lg p-1" />
             </div>
             <p className="text-sm text-gray-400 mb-4">
               {settings.tagline}

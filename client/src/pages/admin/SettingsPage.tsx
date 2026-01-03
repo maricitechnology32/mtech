@@ -37,6 +37,7 @@ export default function SettingsPage() {
             ratingCount: '',
             ratingLabel: '',
         },
+        heroSlides: [] as any[],
     });
 
     useEffect(() => {
@@ -75,6 +76,7 @@ export default function SettingsPage() {
                     ratingCount: response.data.stats?.ratingCount || '4.9',
                     ratingLabel: response.data.stats?.ratingLabel || 'Client Rating',
                 },
+                heroSlides: response.data.heroSlides || [],
             });
         } catch (err) {
             console.error('Failed to fetch settings:', err);
@@ -120,6 +122,39 @@ export default function SettingsPage() {
         }));
     };
 
+    // Hero Slides Management
+    const addSlide = () => {
+        setFormData(prev => ({
+            ...prev,
+            heroSlides: [
+                ...prev.heroSlides,
+                {
+                    title: 'New Slide Title',
+                    subtitle: 'New Slide Subtitle',
+                    badge: 'New Badge',
+                    ctaPrimary: 'Primary Action',
+                    ctaSecondary: 'Secondary Action',
+                    image: '',
+                }
+            ]
+        }));
+    };
+
+    const removeSlide = (index: number) => {
+        setFormData(prev => ({
+            ...prev,
+            heroSlides: prev.heroSlides.filter((_, i) => i !== index)
+        }));
+    };
+
+    const updateSlide = (index: number, field: string, value: string) => {
+        setFormData(prev => {
+            const newSlides = [...prev.heroSlides];
+            newSlides[index] = { ...newSlides[index], [field]: value };
+            return { ...prev, heroSlides: newSlides };
+        });
+    };
+
     if (isLoading) {
         return (
             <AdminLayout>
@@ -154,6 +189,105 @@ export default function SettingsPage() {
                 )}
 
                 <form onSubmit={handleSubmit} className="space-y-6">
+
+                    {/* Hero Carousel Management */}
+                    <div className="bg-white border border-gray-200 rounded-xl p-6">
+                        <div className="flex items-center justify-between mb-4">
+                            <div className="flex items-center gap-2">
+                                <SettingsIcon size={20} className="text-blue-600" />
+                                <h2 className="text-lg font-semibold text-gray-900">Hero Carousel</h2>
+                            </div>
+                            <button
+                                type="button"
+                                onClick={addSlide}
+                                className="text-sm px-3 py-1.5 bg-blue-50 text-blue-600 rounded-lg hover:bg-blue-100 font-medium"
+                            >
+                                + Add Slide
+                            </button>
+                        </div>
+
+                        <div className="space-y-6">
+                            {formData.heroSlides.map((slide, index) => (
+                                <div key={index} className="p-4 border border-gray-200 rounded-lg bg-gray-50 relative group">
+                                    <div className="absolute top-4 right-4">
+                                        <button
+                                            type="button"
+                                            onClick={() => removeSlide(index)}
+                                            className="text-red-500 hover:text-red-700 opacity-0 group-hover:opacity-100 transition-opacity"
+                                            title="Remove Slide"
+                                        >
+                                            Remove
+                                        </button>
+                                    </div>
+
+                                    <h3 className="text-sm font-medium text-gray-900 mb-3">Slide {index + 1}</h3>
+                                    <div className="grid md:grid-cols-2 gap-4">
+                                        <div className="md:col-span-2">
+                                            <label className="block text-xs font-medium text-gray-500 mb-1">Title</label>
+                                            <input
+                                                type="text"
+                                                value={slide.title}
+                                                onChange={(e) => updateSlide(index, 'title', e.target.value)}
+                                                className="w-full border border-gray-300 rounded px-2 py-1.5 text-sm"
+                                            />
+                                        </div>
+                                        <div className="md:col-span-2">
+                                            <label className="block text-xs font-medium text-gray-500 mb-1">Subtitle</label>
+                                            <textarea
+                                                value={slide.subtitle}
+                                                onChange={(e) => updateSlide(index, 'subtitle', e.target.value)}
+                                                rows={2}
+                                                className="w-full border border-gray-300 rounded px-2 py-1.5 text-sm resize-none"
+                                            />
+                                        </div>
+                                        <div>
+                                            <label className="block text-xs font-medium text-gray-500 mb-1">Badge</label>
+                                            <input
+                                                type="text"
+                                                value={slide.badge}
+                                                onChange={(e) => updateSlide(index, 'badge', e.target.value)}
+                                                className="w-full border border-gray-300 rounded px-2 py-1.5 text-sm"
+                                            />
+                                        </div>
+                                        <div>
+                                            <label className="block text-xs font-medium text-gray-500 mb-1">Image URL</label>
+                                            <input
+                                                type="text"
+                                                value={slide.image || ''}
+                                                onChange={(e) => updateSlide(index, 'image', e.target.value)}
+                                                className="w-full border border-gray-300 rounded px-2 py-1.5 text-sm"
+                                                placeholder="/images/hero/..."
+                                            />
+                                        </div>
+                                        <div className="grid grid-cols-2 gap-2">
+                                            <div>
+                                                <label className="block text-xs font-medium text-gray-500 mb-1">CTA Primary</label>
+                                                <input
+                                                    type="text"
+                                                    value={slide.ctaPrimary}
+                                                    onChange={(e) => updateSlide(index, 'ctaPrimary', e.target.value)}
+                                                    className="w-full border border-gray-300 rounded px-2 py-1.5 text-sm"
+                                                />
+                                            </div>
+                                            <div>
+                                                <label className="block text-xs font-medium text-gray-500 mb-1">CTA Secondary</label>
+                                                <input
+                                                    type="text"
+                                                    value={slide.ctaSecondary}
+                                                    onChange={(e) => updateSlide(index, 'ctaSecondary', e.target.value)}
+                                                    className="w-full border border-gray-300 rounded px-2 py-1.5 text-sm"
+                                                />
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            ))}
+                            {formData.heroSlides.length === 0 && (
+                                <p className="text-sm text-gray-500 text-center py-4">No slides added. Default content will be used.</p>
+                            )}
+                        </div>
+                    </div>
+
                     {/* Company Information */}
                     <div className="bg-white border border-gray-200 rounded-xl p-6">
                         <div className="flex items-center gap-2 mb-4">

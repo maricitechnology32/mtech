@@ -56,13 +56,29 @@ const SettingsSchema = new mongoose.Schema(
             type: String,
             default: 'We build cutting-edge digital solutions that drive growth and deliver exceptional user experiences.',
         },
+        // Hero Section
+        hero: {
+            title: { type: String, default: 'Transform Your Business with Technology' },
+            subtitle: { type: String, default: 'We build cutting-edge digital solutions that drive growth, enhance efficiency, and deliver exceptional user experiences for forward-thinking companies.' },
+            badge: { type: String, default: 'Enterprise Solutions' },
+            ctaPrimary: { type: String, default: 'Start Your Project' },
+            ctaSecondary: { type: String, default: 'View Our Work' },
+        },
+        heroSlides: [{
+            title: String,
+            subtitle: String,
+            badge: String,
+            ctaPrimary: String,
+            ctaSecondary: String,
+            image: String
+        }],
         // Company Stats
         stats: {
-            projectsCount: { type: String, default: '500+' },
+            projectsCount: { type: String, default: '5+' },
             projectsLabel: { type: String, default: 'Projects Delivered' },
-            clientsCount: { type: String, default: '200+' },
+            clientsCount: { type: String, default: '20+' },
             clientsLabel: { type: String, default: 'Happy Clients' },
-            experienceCount: { type: String, default: '15+' },
+            experienceCount: { type: String, default: '5+' },
             experienceLabel: { type: String, default: 'Years Experience' },
             ratingCount: { type: String, default: '4.9' },
             ratingLabel: { type: String, default: 'Client Rating' },

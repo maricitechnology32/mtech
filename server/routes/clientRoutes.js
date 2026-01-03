@@ -8,7 +8,7 @@ const {
     deleteClient,
     getClientStats,
 } = require('../controllers/clientController');
-const upload = require('../middleware/uploadMiddleware');
+const upload = require('../middleware/uploadMiddleware')('Marici Technology-clients');
 const { protect } = require('../middleware/authMiddleware');
 
 // Public routes

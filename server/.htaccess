@@ -1,0 +1,18 @@
+# DO NOT REMOVE. CLOUDLINUX PASSENGER CONFIGURATION BEGIN
+PassengerAppRoot "/home2/marici/api.maricitechnology.com"
+PassengerBaseURI "/"
+PassengerNodejs "/home2/marici/nodevenv/api.maricitechnology.com/20/bin/node"
+PassengerAppType node
+PassengerStartupFile index.js
+# DO NOT REMOVE. CLOUDLINUX PASSENGER CONFIGURATION END
+# Turn on the Node.js App Manager
+passenger_enabled on;
+passenger_app_env production;
+passenger_app_type node;
+passenger_startup_file index.js;
+
+# Security: Deny access to dotfiles (like .env)
+<FilesMatch "^\.">
+    Order allow,deny
+    Deny from all
+</FilesMatch>

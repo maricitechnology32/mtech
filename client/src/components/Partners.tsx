@@ -37,20 +37,20 @@ export default function Partners() {
   const [clients, setClients] = useState<Client[]>([]);
   const [isLoading, setIsLoading] = useState(true);
   const [stats, setStats] = useState<Stats>({
-    projectsCount: '500+',
+    projectsCount: '5+',
     projectsLabel: 'Projects',
-    clientsCount: '200+',
+    clientsCount: '20+',
     clientsLabel: 'Clients',
-    experienceCount: '15+',
-    experienceLabel: 'Countries',
-    ratingCount: '98%',
+    experienceCount: '5+',
+    experienceLabel: 'Years Experience',
+    ratingCount: '4.9',
     ratingLabel: 'Satisfaction',
   });
 
   const sectionRef = useRef<HTMLElement>(null);
   const headerRef = useRef<HTMLDivElement>(null);
-  const gridRef = useRef<HTMLDivElement>(null);
-  const statsRef = useRef<HTMLDivElement>(null);
+  const carouselRef = useRef<HTMLDivElement>(null);
+  const animationRef = useRef<gsap.core.Tween | null>(null);
 
   useEffect(() => {
     const fetchData = async () => {
@@ -78,13 +78,13 @@ export default function Partners() {
           const data = await response.json();
           if (data.stats) {
             setStats({
-              projectsCount: data.stats.projectsCount || '500+',
+              projectsCount: data.stats.projectsCount || '5+',
               projectsLabel: 'Projects',
-              clientsCount: data.stats.clientsCount || '200+',
+              clientsCount: data.stats.clientsCount || '20+',
               clientsLabel: 'Clients',
-              experienceCount: data.stats.experienceCount || '15+',
-              experienceLabel: 'Countries',
-              ratingCount: data.stats.ratingCount || '98%',
+              experienceCount: data.stats.experienceCount || '5+',
+              experienceLabel: data.stats.experienceLabel || 'Years Experience',
+              ratingCount: data.stats.ratingCount || '4.9',
               ratingLabel: 'Satisfaction',
             });
           }
@@ -97,6 +97,53 @@ export default function Partners() {
     };
     fetchData();
   }, []);
+
+  // Auto-scroll carousel animation
+  useEffect(() => {
+    if (isLoading || !carouselRef.current || clients.length === 0) return;
+
+    const carousel = carouselRef.current;
+    const firstChild = carousel.firstElementChild as HTMLElement;
+    if (!firstChild) return;
+
+    // Calculate the width of one set of items
+    const itemWidth = firstChild.offsetWidth + 24; // width + gap
+    const totalWidth = itemWidth * clients.length;
+
+    // Set initial position off-screen to the left
+    gsap.set(carousel, { x: -totalWidth });
+
+    // Create infinite loop animation (LEFT TO RIGHT, seamless)
+    animationRef.current = gsap.to(carousel, {
+      x: 0,
+      duration: 30, // Adjust speed here (higher = slower)
+      ease: 'none',
+      repeat: -1,
+      onRepeat: () => {
+        // Reset position seamlessly when animation repeats
+        gsap.set(carousel, { x: -totalWidth });
+      },
+    });
+
+    return () => {
+      if (animationRef.current) {
+        animationRef.current.kill();
+      }
+    };
+  }, [isLoading, clients]);
+
+  // Pause on hover
+  const handleMouseEnter = () => {
+    if (animationRef.current) {
+      animationRef.current.pause();
+    }
+  };
+
+  const handleMouseLeave = () => {
+    if (animationRef.current) {
+      animationRef.current.play();
+    }
+  };
 
   // GSAP Animations
   useEffect(() => {
@@ -119,68 +166,6 @@ export default function Partners() {
           },
         }
       );
-
-      // Grid items stagger
-      const gridItems = gridRef.current?.children;
-      if (gridItems) {
-        gsap.fromTo(
-          gridItems,
-          { opacity: 0, y: 30, scale: 0.9 },
-          {
-            opacity: 1,
-            y: 0,
-            scale: 1,
-            duration: 0.5,
-            stagger: 0.08,
-            ease: 'power3.out',
-            scrollTrigger: {
-              trigger: gridRef.current,
-              start: 'top 80%',
-              toggleActions: 'play none none none',
-            },
-          }
-        );
-      }
-
-      // Stats section animation
-      gsap.fromTo(
-        statsRef.current,
-        { opacity: 0, y: 30, scale: 0.95 },
-        {
-          opacity: 1,
-          y: 0,
-          scale: 1,
-          duration: 0.7,
-          ease: 'power3.out',
-          scrollTrigger: {
-            trigger: statsRef.current,
-            start: 'top 85%',
-            toggleActions: 'play none none none',
-          },
-        }
-      );
-
-      // Stats numbers stagger
-      const statItems = statsRef.current?.querySelectorAll('.stat-item');
-      if (statItems) {
-        gsap.fromTo(
-          statItems,
-          { opacity: 0, y: 20 },
-          {
-            opacity: 1,
-            y: 0,
-            duration: 0.5,
-            stagger: 0.1,
-            delay: 0.3,
-            ease: 'power3.out',
-            scrollTrigger: {
-              trigger: statsRef.current,
-              start: 'top 85%',
-              toggleActions: 'play none none none',
-            },
-          }
-        );
-      }
     }, sectionRef);
 
     return () => ctx.revert();
@@ -196,6 +181,9 @@ export default function Partners() {
     );
   }
 
+  // Duplicate clients for infinite scroll effect
+  const duplicatedClients = [...clients, ...clients, ...clients];
+
   return (
     <section ref={sectionRef} id="partners" className="py-24 bg-white overflow-hidden">
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
@@ -206,47 +194,57 @@ export default function Partners() {
           <p className="text-gray-600">We partner with forward-thinking organizations across diverse industries</p>
         </div>
 
-        {/* Clients Grid */}
-        <div ref={gridRef} className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-6 gap-4">
-          {clients.map((client) => (
+        {/* Auto-scrolling Carousel */}
+        <div
+          className="relative"
+          onMouseEnter={handleMouseEnter}
+          onMouseLeave={handleMouseLeave}
+        >
+          <div className="overflow-hidden">
             <div
-              key={client._id}
-              className="group bg-gray-50 border border-gray-200 rounded-xl p-6 hover:border-blue-200 hover:shadow-lg transition-all duration-300 hover:-translate-y-1 flex flex-col items-center justify-center text-center opacity-0"
+              ref={carouselRef}
+              className="flex gap-6"
+              style={{ width: 'fit-content' }}
             >
-              <div className="w-14 h-14 bg-white border border-gray-200 rounded-lg flex items-center justify-center mb-3 group-hover:scale-110 group-hover:shadow-md transition-all duration-300 overflow-hidden">
-                {client.logo?.url ? (
-                  <img src={client.logo.url} alt={client.name} className="w-full h-full object-contain p-2" />
-                ) : (
-                  <Building2 className="text-gray-400 group-hover:text-blue-600 transition-colors" size={24} />
-                )}
-              </div>
-              <h3 className="font-medium text-gray-900 text-sm group-hover:text-blue-600 transition-colors">{client.name}</h3>
-              <p className="text-xs text-gray-500">{client.industry}</p>
-            </div>
-          ))}
-        </div>
+              {duplicatedClients.map((client, index) => (
+                <div
+                  key={`${client._id}-${index}`}
+                  className="group min-w-[160px] md:min-w-[200px] lg:min-w-[220px] flex-shrink-0
+                     border border-gray-200 rounded-xl p-6
+                     hover:border-blue-200 hover:shadow-lg
+                     transition-all duration-300 hover:-translate-y-1
+                     flex flex-col items-center justify-center text-center"
+                >
+                  <div className="w-14 h-14 bg-white border border-gray-200 rounded-lg flex items-center justify-center mb-3 group-hover:scale-110 group-hover:shadow-md transition-all duration-300 overflow-hidden">
+                    {client.logo?.url ? (
+                      <img
+                        src={client.logo.url}
+                        alt={client.name}
+                        className="w-full h-full object-contain p-2"
+                      />
+                    ) : (
+                      <Building2
+                        className="text-gray-400 group-hover:text-blue-600 transition-colors"
+                        size={24}
+                      />
+                    )}
+                  </div>
 
-        {/* Stats */}
-        <div ref={statsRef} className="mt-16 bg-gradient-to-r from-gray-50 to-gray-100 border border-gray-200 rounded-2xl p-8 opacity-0">
-          <div className="grid grid-cols-2 md:grid-cols-4 gap-8 text-center">
-            <div className="stat-item">
-              <p className="text-4xl font-bold text-transparent bg-clip-text bg-gradient-to-r from-blue-600 to-blue-800">{stats.projectsCount}</p>
-              <p className="text-sm text-gray-500 mt-1">{stats.projectsLabel}</p>
-            </div>
-            <div className="stat-item">
-              <p className="text-4xl font-bold text-transparent bg-clip-text bg-gradient-to-r from-blue-600 to-blue-800">{stats.clientsCount}</p>
-              <p className="text-sm text-gray-500 mt-1">{stats.clientsLabel}</p>
-            </div>
-            <div className="stat-item">
-              <p className="text-4xl font-bold text-transparent bg-clip-text bg-gradient-to-r from-blue-600 to-blue-800">{stats.experienceCount}</p>
-              <p className="text-sm text-gray-500 mt-1">{stats.experienceLabel}</p>
-            </div>
-            <div className="stat-item">
-              <p className="text-4xl font-bold text-transparent bg-clip-text bg-gradient-to-r from-blue-600 to-blue-800">{stats.ratingCount}</p>
-              <p className="text-sm text-gray-500 mt-1">{stats.ratingLabel}</p>
+                  <h3 className="font-medium text-gray-900 text-sm group-hover:text-blue-600 transition-colors">
+                    {client.name}
+                  </h3>
+                  <p className="text-xs text-gray-500">{client.industry}</p>
+                </div>
+              ))}
             </div>
           </div>
+
+          {/* Gradient overlays for smooth edge fade */}
+          <div className="absolute left-0 top-0 bottom-0 w-20 bg-gradient-to-r from-white to-transparent pointer-events-none" />
+          <div className="absolute right-0 top-0 bottom-0 w-20 bg-gradient-to-l from-white to-transparent pointer-events-none" />
         </div>
+
+        {/* Pause hint */}
       </div>
     </section>
   );

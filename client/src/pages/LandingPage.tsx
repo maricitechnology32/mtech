@@ -20,10 +20,13 @@ const LandingPage: React.FC = () => {
             <Navigation />
             <Hero />
             <Partners />
-            <ValueProposition />
+            <Projects />
             <Services />
             <BusinessGrowth />
-            <Projects />
+            {/* <ValueProposition /> */}
+
+
+
             <Testimonials />
             <WhyChooseUs />
             <Team />

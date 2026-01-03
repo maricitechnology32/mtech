@@ -2,14 +2,16 @@ const multer = require('multer');
 const { CloudinaryStorage } = require('multer-storage-cloudinary');
 const cloudinary = require('../config/cloudinary');
 
-const storage = new CloudinaryStorage({
-    cloudinary: cloudinary,
-    params: {
-        folder: 'Marici Technology-testimonials', // Folder name in Cloudinary
-        allowed_formats: ['jpg', 'png', 'jpeg', 'webp'],
-    },
-});
+const createUploadMiddleware = (folderName) => {
+    const storage = new CloudinaryStorage({
+        cloudinary: cloudinary,
+        params: {
+            folder: folderName, // Use the passed folder name
+            allowed_formats: ['jpg', 'png', 'jpeg', 'webp'],
+        },
+    });
 
-const upload = multer({ storage: storage });
+    return multer({ storage: storage });
+};
 
-module.exports = upload;
+module.exports = createUploadMiddleware;

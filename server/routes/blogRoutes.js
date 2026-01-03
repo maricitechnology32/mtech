@@ -10,7 +10,7 @@ const {
     getBlogStats,
 } = require('../controllers/blogController');
 const { protect } = require('../middleware/authMiddleware');
-const upload = require('../middleware/uploadMiddleware');
+const upload = require('../middleware/uploadMiddleware')('Marici Technology-blogs');
 
 // Public routes
 router.get('/', getBlogs);

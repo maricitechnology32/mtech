@@ -26,9 +26,31 @@ const app = express();
 const PORT = process.env.PORT || 5000;
 
 // CORS configuration
+// CORS configuration
+const allowedOrigins = [
+    process.env.CLIENT_URL || 'http://localhost:5173',
+    'http://localhost:3000',
+    'https://maricitechnology.com',
+    'https://www.maricitechnology.com',
+    'https://maricitechnologies.com',
+    'https://www.maricitechnologies.com',
+    'https://maricitechnologies.com'
+];
+
 app.use(cors({
-    origin: process.env.CLIENT_URL || 'http://localhost:5173',
+    origin: function (origin, callback) {
+        // allow requests with no origin (like mobile apps or curl requests)
+        if (!origin) return callback(null, true);
+        if (allowedOrigins.indexOf(origin) === -1) {
+            // For development, you might want to allow all, but for prod be specific
+            // return callback(new Error('The CORS policy for this site does not allow access from the specified Origin.'), false);
+            return callback(null, true); // Temporarily allow all for easier deployment debugging
+        }
+        return callback(null, true);
+    },
     credentials: true,
+    methods: ['GET', 'POST', 'PUT', 'DELETE', 'PATCH', 'OPTIONS'],
+    allowedHeaders: ['Content-Type', 'Authorization', 'X-Requested-With', 'Accept']
 }));
 
 app.use(express.json({ limit: '10mb' }));

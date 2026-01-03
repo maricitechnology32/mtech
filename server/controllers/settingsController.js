@@ -52,7 +52,7 @@ const updateSettings = async (req, res) => {
             if (socialLinks.instagram !== undefined) settings.socialLinks.instagram = socialLinks.instagram;
         }
 
-        const { stats } = req.body;
+        const { stats, hero } = req.body;
         if (stats) {
             if (stats.projectsCount !== undefined) settings.stats.projectsCount = stats.projectsCount;
             if (stats.projectsLabel !== undefined) settings.stats.projectsLabel = stats.projectsLabel;
@@ -62,6 +62,19 @@ const updateSettings = async (req, res) => {
             if (stats.experienceLabel !== undefined) settings.stats.experienceLabel = stats.experienceLabel;
             if (stats.ratingCount !== undefined) settings.stats.ratingCount = stats.ratingCount;
             if (stats.ratingLabel !== undefined) settings.stats.ratingLabel = stats.ratingLabel;
+        }
+
+        if (hero) {
+            if (hero.title !== undefined) settings.hero.title = hero.title;
+            if (hero.subtitle !== undefined) settings.hero.subtitle = hero.subtitle;
+            if (hero.badge !== undefined) settings.hero.badge = hero.badge;
+            if (hero.ctaPrimary !== undefined) settings.hero.ctaPrimary = hero.ctaPrimary;
+            if (hero.ctaSecondary !== undefined) settings.hero.ctaSecondary = hero.ctaSecondary;
+        }
+
+        const { heroSlides } = req.body;
+        if (heroSlides !== undefined) {
+            settings.heroSlides = heroSlides;
         }
 
         const updatedSettings = await settings.save();

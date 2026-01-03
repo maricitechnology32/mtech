@@ -268,33 +268,7 @@ export default function Testimonials() {
           ))}
         </div>
 
-        {/* Rating Banner */}
-        <div ref={bannerRef} className="mt-20 relative opacity-0">
-          <div className="absolute inset-0 bg-gradient-to-r from-blue-600 via-blue-700 to-purple-700 rounded-3xl blur-xl opacity-50" />
-          <div className="relative bg-gradient-to-r from-blue-600 via-blue-700 to-purple-700 rounded-3xl p-10 text-center text-white overflow-hidden">
-            {/* Animated background pattern */}
-            <div className="absolute inset-0 opacity-10">
-              <div className="absolute inset-0" style={{
-                backgroundImage: `radial-gradient(circle at 2px 2px, white 1px, transparent 0)`,
-                backgroundSize: '30px 30px'
-              }} />
-            </div>
 
-            {/* Floating elements */}
-            <div className="absolute top-4 left-10 w-20 h-20 bg-white/10 rounded-full blur-2xl" />
-            <div className="absolute bottom-4 right-10 w-32 h-32 bg-purple-400/20 rounded-full blur-2xl" />
-
-            <div className="relative">
-              <div className="flex items-center justify-center gap-2 mb-4">
-                {[...Array(5)].map((_, i) => (
-                  <Star key={i} className="rating-star text-yellow-300 fill-yellow-300" size={32} />
-                ))}
-              </div>
-              <h3 className="text-4xl font-bold mb-3">4.9/5 Average Rating</h3>
-              <p className="text-blue-100">Based on 500+ client reviews across all platforms</p>
-            </div>
-          </div>
-        </div>
       </div>
     </section>
   );

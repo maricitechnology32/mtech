@@ -8,7 +8,7 @@ const {
     deleteProject,
     getProjectStats,
 } = require('../controllers/projectController');
-const upload = require('../middleware/uploadMiddleware');
+const upload = require('../middleware/uploadMiddleware')('Marici Technology-projects');
 const { protect } = require('../middleware/authMiddleware');
 
 // Public routes

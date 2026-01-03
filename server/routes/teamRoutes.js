@@ -8,7 +8,7 @@ const {
     deleteTeamMember,
     getTeamStats,
 } = require('../controllers/teamController');
-const upload = require('../middleware/uploadMiddleware');
+const upload = require('../middleware/uploadMiddleware')('Marici Technology-team');
 const { protect } = require('../middleware/authMiddleware');
 
 // Public routes
